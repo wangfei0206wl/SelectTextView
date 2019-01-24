@@ -14,8 +14,6 @@
 
 @interface XPSelectTextContainerView ()
 
-// 父视图view
-@property (nonatomic, weak) UIView *parentView;
 // 部分选中对应的CTFrame
 @property (nonatomic, assign) CTFrameRef ctFrame;
 // 文本信息
@@ -48,18 +46,7 @@
     
     if (self) {
         [self createSubViews];
-    }
-    
-    return self;
-}
-
-- (instancetype)initWithFrame:(CGRect)frame parentView:(UIView *)parentView {
-    self = [super initWithFrame:frame];
-    
-    if (self) {
-        self.parentView = parentView;
-
-        [self createSubViews];
+        [self addGestures];
     }
     
     return self;
@@ -70,7 +57,6 @@
     for (UIMenuItem *item in arrMenuItems) {
         Method method = class_getInstanceMethod([responseObj class], item.action);
         class_addMethod([self class], item.action, imp_implementationWithBlock(^{
-            [self hide];
             // 这里调用外部定义的方法
             if ([responseObj respondsToSelector:item.action]) {
 #pragma clang diagnostic push
@@ -78,6 +64,7 @@
                 [responseObj performSelector:item.action withObject:[self selectText]];
 #pragma clang diagnostic pop
             }
+            [self hide];
         }), method_getTypeEncoding(method));
         method = class_getInstanceMethod([self class], item.action);
         item.action = method_getName(method);
@@ -87,27 +74,38 @@
     [[UIMenuController sharedMenuController] setMenuVisible:NO];
 }
 
-- (void)updateWithFrame:(CGRect)frame ctFrame:(CTFrameRef)ctFrame text:(NSString *)text {
-    self.frame = frame;
+- (void)updateWithCTFrame:(CTFrameRef)ctFrame text:(NSString *)text {
     self.ctFrame = ctFrame;
     self.text = text;
 }
 
 - (void)show {
-    // 需要全选
     self.startRunModel = self.arrRunModels.firstObject;
     self.endRunModel = self.arrRunModels.lastObject;
+    self.rangeView.hidden = NO;
     
     [self updateSelectRangeView];
-    [self.parentView addSubview:self];
-
     [self showMenuView];
 }
 
 - (void)hide {
+    self.startRunModel = nil;
+    self.endRunModel = nil;
+    self.rangeView.hidden = YES;
+    
     [self hideMenuView];
     [self resignFirstResponder];
-    [self removeFromSuperview];
+}
+
+#pragma mark - action
+
+- (void)onTap:(UITapGestureRecognizer *)gesture {
+    [self hide];
+}
+
+- (void)onLongPress:(UILongPressGestureRecognizer *)gesture {
+    // 需要全选
+    [self show];
 }
 
 #pragma mark - touch event
@@ -121,7 +119,15 @@
     XPCTLinkModel *linkModel = [XPCoreTextAlgorithm findLinkModel:point linkModels:self.arrLinkModels];
     
     if (linkModel) {
-        // 点击了链接
+        // TODO: 点击了链接
+        NSString *linkString = [self.text substringWithRange:linkModel.range];
+        NSString *message = [NSString stringWithFormat:@"点击了%@", linkString];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                                                            message:message
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"ok"
+                                                  otherButtonTitles:nil, nil];
+        [alertView show];
     } else {
         // 根据点击位置判断移动大头针类型
         self.moveType = [XPCoreTextAlgorithm analysisMoveType:point startModel:self.startRunModel endModel:self.endRunModel];
@@ -135,9 +141,7 @@
 }
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event {
-    // 隐藏放大镜，显示menu
-    self.magnifierView.hidden = YES;
-    [self showMenuView];
+
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -182,7 +186,7 @@
 - (void)updateSelectRangeView {
     // 更新选中区域视图
     NSDictionary *dicInfo = [XPCoreTextAlgorithm caculateSelArea:self startRun:self.startRunModel endRun:self.endRunModel];
-    
+
     [self.rangeView updateWithUpRect:[dicInfo[@"startArea"] CGRectValue] midRect:[dicInfo[@"middleArea"] CGRectValue] downRect:[dicInfo[@"endArea"] CGRectValue]];
 }
 
@@ -230,6 +234,14 @@
     self.rangeView = [[XPSelectTextRangeView alloc] initWithFrame:self.bounds];
     self.rangeView.backgroundColor = [UIColor clearColor];
     [self addSubview:self.rangeView];
+}
+
+- (void)addGestures {
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTap:)];
+    [self addGestureRecognizer:tap];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPress:)];
+    [self addGestureRecognizer:longPress];
 }
 
 - (XPMagnifierView *)magnifierView {

@@ -16,15 +16,6 @@
 @interface XPSelectTextContainerView : UIView
 
 /**
- 初始化实例
-
- @param frame 容器视图尺寸
- @param parentView 父窗口
- @return 实例
- */
-- (instancetype)initWithFrame:(CGRect)frame parentView:(UIView *)parentView;
-
-/**
  设置部分选中的menu
 
  @param arrMenuItems 菜单项
@@ -33,22 +24,11 @@
 - (void)setMenuItems:(NSArray<UIMenuItem *> *)arrMenuItems responseObj:(id)responseObj;
 
 /**
- 更新容器(show方法调用前使用)
-
- @param frame 容器视图尺寸
+ 更新容器信息
+ 
  @param ctFrame ctFrame
  @param text 文本
  */
-- (void)updateWithFrame:(CGRect)frame ctFrame:(CTFrameRef)ctFrame text:(NSString *)text;
-
-/**
- 显示
- */
-- (void)show;
-
-/**
- 隐藏
- */
-- (void)hide;
+- (void)updateWithCTFrame:(CTFrameRef)ctFrame text:(NSString *)text;
 
 @end

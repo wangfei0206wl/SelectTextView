@@ -31,7 +31,10 @@
     self = [super initWithFrame:frame];
     
     if (self) {
-        [self setupEvents];
+        self.userInteractionEnabled = YES;
+        
+        self.selectView = [[XPSelectTextContainerView alloc] initWithFrame:self.bounds];
+        [self addSubview:self.selectView];
     }
     
     return self;
@@ -59,6 +62,8 @@
     CGContextTranslateCTM(context, 0, self.bounds.size.height);
     CGContextScaleCTM(context, 1.0, -1.0);
     CTFrameDraw(self.ctFrame, context);
+    
+    [self.selectView updateWithCTFrame:self.ctFrame text:self.text];
 }
 
 - (void)dealloc {
@@ -66,36 +71,6 @@
         CFRelease(_ctFrame);
         _ctFrame = nil;
     }
-}
-
-#pragma mark - action
-
-- (void)onTap:(UITapGestureRecognizer *)gesture {
-    [self.selectView hide];
-}
-
-- (void)onLongPress:(UILongPressGestureRecognizer *)gesture {
-    [self.selectView updateWithFrame:self.bounds ctFrame:self.ctFrame text:self.text];
-    [self.selectView show];
-}
-
-#pragma mark - private
-
-- (void)setupEvents {
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTap:)];
-    [self addGestureRecognizer:tap];
-    
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPress:)];
-    [self addGestureRecognizer:longPress];
-    
-    self.userInteractionEnabled = YES;
-}
-
-- (XPSelectTextContainerView *)selectView {
-    if (!_selectView) {
-        _selectView = [[XPSelectTextContainerView alloc] initWithFrame:self.bounds parentView:self];
-    }
-    return _selectView;
 }
 
 - (CTFrameRef)ctFrame {

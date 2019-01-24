@@ -21,17 +21,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    [self partSelectLabelTest];
-//    [self partSelectLabelViewTest];
-    
-//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 80)];
-//    view.center = CGPointMake(self.view.center.x, 100);
-//    view.backgroundColor = [UIColor greenColor];
-//    [self.view addSubview:view];
+//    [self partSelectLabelTest];
+    [self partSelectLabelViewTest];
 }
 
 - (void)partSelectLabelTest {
+    // 基于label
 #if 0
+    // 普通文本
     NSString *text = [self testString];
     CGSize size = [UIPartSelectLabel caculateSize:text font:[UIFont systemFontOfSize:16] restrictSize:CGSizeMake(CGRectGetWidth(self.view.frame) - 30, CGFLOAT_MAX)];
     UIPartSelectLabel *label = [[UIPartSelectLabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
@@ -43,6 +40,7 @@
     [label setMenuItems:[self selectTextContrainMenus] responseObj:self];
     [self.view addSubview:label];
 #else
+    // 富文本
     NSAttributedString *text = [self attributedString];
     CGSize size = [UIPartSelectLabel caculateSize:text restrictSize:CGSizeMake(CGRectGetWidth(self.view.frame) - 30, CGFLOAT_MAX)];
     UIPartSelectLabel *label = [[UIPartSelectLabel alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
@@ -55,7 +53,9 @@
 }
 
 - (void)partSelectLabelViewTest {
+    // 基于view
 #if 0
+    // 普通文本
     NSString *text = [self testString];
     CGSize size = [UIPartSelectLabelView caculateSize:text font:[UIFont systemFontOfSize:16] restrictSize:CGSizeMake(CGRectGetWidth(self.view.frame) - 30, CGFLOAT_MAX)];
     UIPartSelectLabelView *label = [[UIPartSelectLabelView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
@@ -66,6 +66,7 @@
     [label setMenuItems:[self selectTextContrainMenus] responseObj:self];
     [self.view addSubview:label];
 #else
+    // 富文本
     NSAttributedString *text = [self attributedString];
     CGSize size = [UIPartSelectLabelView caculateSize:text restrictSize:CGSizeMake(CGRectGetWidth(self.view.frame) - 30, CGFLOAT_MAX)];
     UIPartSelectLabelView *label = [[UIPartSelectLabelView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
