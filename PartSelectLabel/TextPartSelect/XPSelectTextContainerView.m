@@ -43,6 +43,16 @@
 
 @implementation XPSelectTextContainerView
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    
+    if (self) {
+        [self createSubViews];
+    }
+    
+    return self;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame parentView:(UIView *)parentView {
     self = [super initWithFrame:frame];
     
