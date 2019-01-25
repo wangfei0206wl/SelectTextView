@@ -3,7 +3,7 @@
 //  pandora_p
 //
 //  Created by 王飞 on 2019/1/11.
-//  Copyright © 2019 搜狗企业IT部. All rights reserved.
+//  Copyright © 2019 wang. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

@@ -3,7 +3,7 @@
 //  pandora_p
 //
 //  Created by 王飞 on 2018/12/20.
-//  Copyright © 2018 搜狗企业IT部. All rights reserved.
+//  Copyright © 2018 wang. All rights reserved.
 //
 
 #import "XPSelectTextRangeView.h"
