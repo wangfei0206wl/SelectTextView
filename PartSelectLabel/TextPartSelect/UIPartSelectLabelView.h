@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "XPSelectTextContainerView.h"
 
 // 防label的视图
 @interface UIPartSelectLabelView : UIView
@@ -19,6 +20,15 @@
 @property (nonatomic, strong) UIFont *font;
 // 颜色
 @property (nonatomic, strong) UIColor *textColor;
+
+/**
+ 实例化对象
+ 
+ @param frame 尺寸
+ @param delegate 代理
+ @return 实例
+ */
+- (instancetype)initWithFrame:(CGRect)frame delegate:(id)delegate;
 
 /**
  设置label的menu

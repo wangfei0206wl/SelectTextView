@@ -9,11 +9,19 @@
 #import <UIKit/UIKit.h>
 #import <CoreText/CoreText.h>
 #import "XPCTRunModel.h"
+#import "XPCTLinkModel.h"
+
+@protocol XPSelectTextContainerViewDelegate;
 
 /**
  部分选中容器视图
  */
 @interface XPSelectTextContainerView : UIView
+
+/**
+ 代理(如果未设置代理或未实现代理方法，则使用默认类自己的默认方式处理)
+ */
+@property (nonatomic, weak) id<XPSelectTextContainerViewDelegate> delegate;
 
 /**
  设置部分选中的menu
@@ -30,5 +38,14 @@
  @param text 文本
  */
 - (void)updateWithCTFrame:(CTFrameRef)ctFrame text:(NSString *)text;
+
+@end
+
+// 代理
+@protocol XPSelectTextContainerViewDelegate <NSObject>
+
+@optional
+// 点击链接时回调
+- (void)selectTextContainerView:(XPSelectTextContainerView *)view didClickLink:(XPCTLinkModel *)model;
 
 @end

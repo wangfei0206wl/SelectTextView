@@ -119,15 +119,8 @@
     XPCTLinkModel *linkModel = [XPCoreTextAlgorithm findLinkModel:point linkModels:self.arrLinkModels];
     
     if (linkModel) {
-        // TODO: 点击了链接
-        NSString *linkString = [self.text substringWithRange:linkModel.range];
-        NSString *message = [NSString stringWithFormat:@"点击了%@", linkString];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                            message:message
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"ok"
-                                                  otherButtonTitles:nil, nil];
-        [alertView show];
+        // 点击了链接
+        [self handleClickLink:linkModel];
     } else {
         // 根据点击位置判断移动大头针类型
         self.moveType = [XPCoreTextAlgorithm analysisMoveType:point startModel:self.startRunModel endModel:self.endRunModel];
@@ -290,6 +283,45 @@
         text = [self.text substringWithRange:NSMakeRange(location, length)];
     }
     return text;
+}
+
+- (void)handleClickLink:(XPCTLinkModel *)model {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(selectTextContainerView:didClickLink:)]) {
+        [self.delegate selectTextContainerView:self didClickLink:model];
+    } else {
+        // 默认处理逻辑
+        [self defaultHandleLink:model];
+    }
+}
+
+- (void)defaultHandleLink:(XPCTLinkModel *)model {
+    switch (model.type) {
+        case XPCTLinkTypeUrl:
+            [self handleClickUrlLink:model.text];
+            break;
+        case XPCTLinkTypeTel:
+            [self handleClickTelLink:model.text];
+            break;
+        case XPCTLinkTypeEmail:
+            [self handleClickEmailLink:model.text];
+            break;
+    }
+}
+
+- (void)handleClickUrlLink:(NSString *)text {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:text] options:@{} completionHandler:nil];
+}
+
+- (void)handleClickTelLink:(NSString *)text {
+    NSString *url = [NSString stringWithFormat:@"tel://%@", text];
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:nil];
+}
+
+- (void)handleClickEmailLink:(NSString *)text {
+    NSString *url = [NSString stringWithFormat:@"mailto://%@", text];
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:nil];
 }
 
 @end

@@ -9,7 +9,6 @@
 #import "UIPartSelectLabelView.h"
 #import <CoreText/CoreText.h>
 #import "XPCoreTextAlgorithm.h"
-#import "XPSelectTextContainerView.h"
 
 // 默认行间距
 #define kDefaultLineSpacing     (8)
@@ -27,13 +26,14 @@
     [self.selectView setMenuItems:arrMenuItems responseObj:responseObj];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame delegate:(id)delegate {
     self = [super initWithFrame:frame];
     
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         
         self.selectView = [[XPSelectTextContainerView alloc] initWithFrame:self.bounds];
+        self.selectView.delegate = delegate;
         [self addSubview:self.selectView];
     }
     

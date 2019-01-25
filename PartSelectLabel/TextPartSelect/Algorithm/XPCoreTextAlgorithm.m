@@ -86,12 +86,17 @@ NSString * const kPartSelectAttrValuePre = @"PartSelectAttrPre";
             XPCTRunModel *startRunModel = [arrRunModels objectAtIndex:result.range.location];
             XPCTRunModel *endRunModel = [arrRunModels objectAtIndex:(result.range.location + result.range.length - 1)];
             NSDictionary *dicResult = [XPCoreTextAlgorithm caculateSelArea:view startRun:startRunModel endRun:endRunModel];
+            NSString *linkText= [text substringWithRange:result.range];
             
             if (result.resultType == NSTextCheckingTypeLink) {
                 type = [result.URL.absoluteString hasPrefix:@"mailto:"]?XPCTLinkTypeEmail:XPCTLinkTypeUrl;
             }
+            if (type == XPCTLinkTypeUrl) {
+                linkText = [result.URL absoluteString];
+            }
             XPCTLinkModel *model = [XPCTLinkModel linkModelWithType:type
                                                               range:result.range
+                                                               text:linkText
                                                               start:[dicResult[@"startArea"] CGRectValue]
                                                              middle:[dicResult[@"middleArea"] CGRectValue]
                                                                 end:[dicResult[@"endArea"] CGRectValue]];

@@ -7,9 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "XPSelectTextContainerView.h"
 
 // 支持部分选中的label
 @interface UIPartSelectLabel : UILabel
+
+/**
+ 实例化对象
+
+ @param frame 尺寸
+ @param delegate 代理
+ @return 实例
+ */
+- (instancetype)initWithFrame:(CGRect)frame delegate:(id)delegate;
 
 /**
  设置label的menu

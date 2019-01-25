@@ -31,6 +31,8 @@ typedef NS_ENUM(NSUInteger, XPCTLinkType) {
 @property (nonatomic, assign) XPCTLinkType type;
 // 链接在整个字符串中的range
 @property (nonatomic, assign) NSRange range;
+// 对应的文本
+@property (nonatomic, strong) NSString *text;
 // 链接开始区域
 @property (nonatomic, assign) CGRect startRect;
 // 链接中间区域
@@ -51,6 +53,7 @@ typedef NS_ENUM(NSUInteger, XPCTLinkType) {
 
  @param type 链接类型
  @param range 链接字符串在父字符串中的range
+ @param text 链接对应文本
  @param startRect 链接显示开始区域
  @param middleRect 链接显示中间区域
  @param endRect 链接显示结束区域
@@ -58,6 +61,7 @@ typedef NS_ENUM(NSUInteger, XPCTLinkType) {
  */
 + (instancetype)linkModelWithType:(XPCTLinkType)type
                             range:(NSRange)range
+                             text:(NSString *)text
                             start:(CGRect)startRect
                            middle:(CGRect)middleRect
                               end:(CGRect)endRect;

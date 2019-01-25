@@ -20,6 +20,7 @@
 
 + (instancetype)linkModelWithType:(XPCTLinkType)type
                             range:(NSRange)range
+                             text:(NSString *)text
                             start:(CGRect)startRect
                            middle:(CGRect)middleRect
                               end:(CGRect)endRect {
@@ -27,6 +28,7 @@
     
     model.type = type;
     model.range = range;
+    model.text = text;
     model.startRect = startRect;
     model.middleRect = middleRect;
     model.endRect = endRect;
